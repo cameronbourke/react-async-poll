@@ -9,7 +9,7 @@ react-async-poll requires React 0.14 or later.
 npm install --save react-async-poll
 ```
 
-### `asyncPoll([intervalDuration], [onInterval], [Component])`
+### `asyncPoll([intervalDuration], [onInterval])`
 
 Connects a React component to a polling instance.
 
