@@ -42,7 +42,7 @@
     "webpack-hot-middleware": "2.10.0"
   },
   "peerDependency": {
-    "react": "15.0.1"
+    "react": ">0.14.0"
   },
   "dependencies": {
     "promise": "7.1.1"
