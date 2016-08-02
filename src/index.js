@@ -35,7 +35,10 @@ const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
 				this.asyncInterval(intervalDuration, fn);
 			}, intervalDuration);
 			const assignNextInterval = () => {
-				if (!this.keepPolling) return this.stopPolling();
+				if (!this.keepPolling) {
+					this.stopPolling();
+					return;
+				}
 				this.interval = asyncTimeout();
 			};
 
