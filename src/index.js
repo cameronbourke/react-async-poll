@@ -1,13 +1,24 @@
 import React from 'react';
 import Promise from 'promise';
 
-const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
+const asyncPoll = ({
+	intervalDuration = 60 * 1000,
+	onInterval,
+	pollWhenHidden = true,
+}) => {
 
 	return (Component) => class extends React.Component {
 		constructor () {
 			super();
 			this.startPolling = this.startPolling.bind(this);
 			this.stopPolling = this.stopPolling.bind(this);
+			this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+		}
+
+		componentWillMount () {
+			if (!pollWhenHidden) {
+				document.addEventListener('visibilitychange', this.handleVisibilityChange);
+			}
 		}
 
 		componentDidMount () {
@@ -16,6 +27,7 @@ const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
 
 		componentWillUnmount () {
 			this.stopPolling();
+			document.removeEventListener('visibilitychange', this.handleVisibilityChange);
 		}
 
 		startPolling () {
@@ -26,7 +38,18 @@ const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
 
 		stopPolling () {
 			this.keepPolling = false;
-			if (this.interval) clearTimeout(this.interval);
+			if (this.interval) {
+				clearTimeout(this.interval);
+				this.interval = null;
+			}
+		}
+
+		handleVisibilityChange () {
+			if (document.hidden) {
+				this.stopPolling();
+			} else {
+				this.startPolling();
+			}
 		}
 
 		asyncInterval (intervalDuration, fn) {

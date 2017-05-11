@@ -1,6 +1,6 @@
 {
   "name": "react-async-poll",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Polling for data in React made easy.",
   "keywords": [
     "react-component",

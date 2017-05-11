@@ -3,6 +3,8 @@ react-async-poll
 
 WebSockets are cool and awesome, but sometimes we don't get to choose our backend. So how can we still get the most recent data into our react app on a regular basis? Polling to the rescue!
 
+**NOTE:** version 2.x has a breaking change in the interface. For extensibility, `asyncPoll()` now takes only one argument: an object with named attributes.
+
 ## Installation
 react-async-poll requires React 0.14 or later.
 ```
@@ -34,21 +36,25 @@ const onPollInterval = (props, dispatch) => {
 The first invocation of asyncPoll will return a function
 that accepts only one argument: your component
 */
-export default asyncPoll(60 * 1000, onPollInterval)(WrappedComponent);
+export default asyncPoll({
+    intervalDuration: 60 * 1000,
+    onPollInterval
+})(WrappedComponent);
 ```
 
 ## Documentation
 
-### `asyncPoll([intervalDuration], [onInterval])`
+### `asyncPoll(options)`
 
 Connects a React component to a polling instance.
 
-#### Arguments
-- `[intervalDuration]` (Number): If specified, this length of time in milliseconds will be used to determine how long to wait until the next call of the `[onInterval]` function once the returned promise resolves. The default value is `60000`.
+#### Options
+- `[intervalDuration]` (Number, optional, default `60000`): This length of time in milliseconds will be used to determine how long to wait until the next call of the `[onInterval]` function once the returned promise resolves.
 - `[onInterval([ownProps], dispatch)]` (Function): If a `Promise` is returned, `[onInterval]` will initiate a `setTimeout` with the `[intervalDuration]` once the `Promise` has resolved. The `dispatch` parameter is only passed to `[onInterval]` if it is available in props, otherwise it will be `undefined`.
+- `[pollWhenHidden]` (Boolean, default `true`): if set to `false`, the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API) will be used to determine if the page is visible and polling will only occur when the page is visible.
 
 #### Remarks
-- The asyncPoll function needs to be invoked twice. The first time with the first two arguments described above (configuration), and a second time, with the last (the component): `asyncPoll(intervalDuration, onInterval)(MyComponent)`. This is because a higher-order component is just a function that takes an existing component and returns another component that wraps it.
+- The asyncPoll function needs to be invoked twice. The first time with the first two arguments described above (configuration), and a second time, with the last (the component): `asyncPoll({options})(MyComponent)`. This is because a higher-order component is just a function that takes an existing component and returns another component that wraps it.
 
 - It does not modify the passed React component. It returns a new, polling component, that you should use instead.
 
