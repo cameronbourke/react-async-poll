@@ -1,35 +1,43 @@
 import React from 'react';
 import Promise from 'promise';
 
-const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
+const asyncPoll = (onInterval, intervalDuration = 60 * 1000) => {
 
 	return (Component) => class extends React.Component {
-		constructor () {
+		interval;
+		keepPolling;
+		constructor() {
 			super();
 			this.startPolling = this.startPolling.bind(this);
 			this.stopPolling = this.stopPolling.bind(this);
 		}
 
-		componentDidMount () {
+		componentDidMount() {
 			this.startPolling();
 		}
 
-		componentWillUnmount () {
+		componentWillUnmount() {
 			this.stopPolling();
 		}
 
-		startPolling () {
-			if (this.interval) return;
+		startPolling() {
+			if (this.interval) {
+				return;
+			}
 			this.keepPolling = true;
 			this.asyncInterval(intervalDuration, onInterval);
 		}
 
-		stopPolling () {
+		stopPolling() {
 			this.keepPolling = false;
-			if (this.interval) clearTimeout(this.interval);
+			if (this.interval) {
+				clearTimeout(this.interval);
+				this.interval = undefined;
+			}
+
 		}
 
-		asyncInterval (intervalDuration, fn) {
+		asyncInterval(intervalDuration, fn) {
 			const promise = fn(this.getProps(), this.props.dispatch);
 			const asyncTimeout = () => setTimeout(() => {
 				this.asyncInterval(intervalDuration, fn);
@@ -43,11 +51,11 @@ const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
 			};
 
 			Promise.resolve(promise)
-			.then(assignNextInterval)
-			.catch(assignNextInterval);
+				.then(assignNextInterval)
+				.catch(assignNextInterval);
 		}
 
-		getProps () {
+		getProps() {
 			return {
 				...this.props,
 				startPolling: this.startPolling,
@@ -56,7 +64,7 @@ const asyncPoll = (intervalDuration = 60 * 1000, onInterval) => {
 			};
 		}
 
-		render () {
+		render() {
 			const props = this.getProps();
 			return <Component {...props} />;
 		}
