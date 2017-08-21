@@ -12,10 +12,10 @@
   "files": [
     "dist"
   ],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/cameronbourke/react-async-poll.git"
-	},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cameronbourke/react-async-poll.git"
+  },
   "scripts": {
     "start": "node server",
     "compile": "babel src --out-dir dist",
